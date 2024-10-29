@@ -1,47 +1,55 @@
 package uts.c14220035.c14220035_latihanfragment3
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 
 class MainActivity : AppCompatActivity() {
+
+    private var finalScore: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Tampilkan Fragment 1 sebagai default saat aplikasi dimulai
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fTebakAngka())
-                .commit()
+        val btnGame = findViewById<Button>(R.id.btnGame)
+        val btnScore = findViewById<Button>(R.id.btnScore)
+        val btnSettings = findViewById<Button>(R.id.btnSettings)
+
+        btnGame.setOnClickListener {
+            resetGameAndReturnToGameFragment() // Reset game saat tombol Game ditekan
+        }
+
+        btnSettings.setOnClickListener {
+            loadFragment(SettingsFragment())
+        }
+
+        btnScore.setOnClickListener {
+            val scoreFragment = ScoreFragment()
+            val bundle = Bundle()
+            bundle.putInt("finalScore", finalScore)
+            scoreFragment.arguments = bundle
+            loadFragment(scoreFragment)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
+    // Fungsi untuk mereset game dan kembali ke GameFragment
+    fun resetGameAndReturnToGameFragment() {
+        finalScore = 0 // Reset skor
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) // Clear back stack
+        loadFragment(GameFragment()) // Memuat ulang GameFragment
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val fragment: Fragment = when (item.itemId) {
-            R.id.nav_game -> fTebakAngka()
-            R.id.nav_score -> fScore()
-            R.id.nav_settings -> fSetting()
-            else -> fTebakAngka()
-        }
+    fun updateFinalScore(score: Int) {
+        finalScore = score
+    }
 
-        // Ganti fragment sesuai pilihan di menu
+    private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+            .replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
-
-        return super.onOptionsItemSelected(item)
     }
 }
