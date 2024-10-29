@@ -21,7 +21,7 @@ class ScoreFragment : Fragment() {
         val finalScore = arguments?.getInt("finalScore") ?: 0
         tvFinalScore.text = "Final Score: $finalScore"
 
-        // Set onClickListener untuk tombol Play Again
+
         btnPlayAgain.setOnClickListener {
             (activity as? MainActivity)?.resetGameAndReturnToGameFragment()
         }

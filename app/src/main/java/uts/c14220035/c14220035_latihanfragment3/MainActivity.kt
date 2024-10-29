@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         val btnSettings = findViewById<Button>(R.id.btnSettings)
 
         btnGame.setOnClickListener {
-            resetGameAndReturnToGameFragment() // Reset game saat tombol Game ditekan
+            resetGameAndReturnToGameFragment() // Atur ulang permainan setiap kali tombol Game ditekan
         }
 
         btnSettings.setOnClickListener {
@@ -35,14 +35,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Fungsi untuk mereset game dan kembali ke GameFragment
     fun resetGameAndReturnToGameFragment() {
-        finalScore = 0 // Reset skor
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) // Clear back stack
-        loadFragment(GameFragment()) // Memuat ulang GameFragment
+        // Reset skor akhir dan memuat ulang GameFragment
+        finalScore = 0
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE) // Kosongkan back stack
+        loadFragment(GameFragment()) // Mulai ulang GameFragment
     }
 
     fun updateFinalScore(score: Int) {
+        // Memperbarui skor akhir setelah permainan selesai
         finalScore = score
     }
 
