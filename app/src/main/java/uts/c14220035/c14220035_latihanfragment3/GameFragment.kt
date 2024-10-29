@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.*
 
 class GameFragment : Fragment() {
 
     private lateinit var tvScoreValue: TextView
     private lateinit var btnGiveUp: Button
     private lateinit var buttons: List<Button>
-    private var score = 50 // Mulai dengan skor awal 50
+    private var score = 50
     private var lastSelectedValue: String? = null
     private var lastButton: Button? = null
     private var matchedPairs = 0
@@ -50,12 +51,11 @@ class GameFragment : Fragment() {
     }
 
     private fun initializeGame() {
-        // Mendapatkan angka random 1-5, setiap angka muncul dua kali, dan diacak
         val numbers = (1..5).flatMap { listOf(it, it) }.shuffled().toMutableList()
 
-        // Menyebarkan angka pada tombol di grid
         buttons.forEachIndexed { index, button ->
-            button.text = numbers[index].toString()
+            button.tag = numbers[index].toString()
+            button.text = ""
             button.setOnClickListener { onNumberButtonClick(button) }
             button.isEnabled = true
             button.visibility = View.VISIBLE
@@ -69,7 +69,9 @@ class GameFragment : Fragment() {
     }
 
     private fun onNumberButtonClick(button: Button) {
-        val selectedValue = button.text.toString()
+        val selectedValue = button.tag.toString()
+
+        button.text = selectedValue
 
         if (lastButton == button) {
             return
@@ -81,9 +83,7 @@ class GameFragment : Fragment() {
             lastButton = button
             button.isEnabled = false
         } else {
-            // Pilih angka kedua dan bandingkan
             if (selectedValue == lastSelectedValue) {
-                // Jika angka sama, skor +10
                 score += 10
                 matchedPairs++
                 button.isEnabled = false
@@ -91,6 +91,8 @@ class GameFragment : Fragment() {
             } else {
                 score -= 5
                 lastButton?.isEnabled = true
+                hideButtonTextDelayed(button)
+                hideButtonTextDelayed(lastButton)
             }
 
             tvScoreValue.text = score.toString()
@@ -101,6 +103,13 @@ class GameFragment : Fragment() {
 
         if (matchedPairs == 4) {
             navigateToResult()
+        }
+    }
+
+    private fun hideButtonTextDelayed(button: Button?) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(500)
+            button?.text = ""
         }
     }
 

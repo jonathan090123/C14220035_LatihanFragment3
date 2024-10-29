@@ -51,7 +51,7 @@ class SettingsFragment : Fragment() {
         val sharedPreferences = activity?.getSharedPreferences("game_prefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
         editor?.putInt("minRange", minRange)
-        editor?.apply() // Simpan perubahan
+        editor?.apply()
     }
     
     private fun loadFragment(fragment: Fragment) {
